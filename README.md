@@ -19,6 +19,17 @@ A cybersecurity project using Machine Learning to analyze password strength and 
 
 ## Run Locally
 
+```cd Desktop
+
+mkdir ai-password-checker
+
+cd ai-password-checker
+
+
+or
+
+
+
 ```bash
 pip install -r requirements.txt
 streamlit run app.py
