@@ -1,9 +1,6 @@
 import streamlit as st
-import joblib
 import math
 import re
-
-model = joblib.load("password_model.pkl")
 
 def calculate_entropy(password):
     charset = 0
@@ -13,6 +10,12 @@ def calculate_entropy(password):
     if re.search(r"[^a-zA-Z0-9]", password): charset += 32
     if charset == 0: return 0
     return round(len(password) * math.log2(charset), 2)
+
+def get_strength_label(entropy):
+    if entropy < 40: return "WEAK"
+    elif entropy < 60: return "MODERATE"
+    elif entropy < 80: return "STRONG"
+    else: return "VERY STRONG"
 
 def estimate_crack_time(entropy):
     if entropy < 28: return "Instantly"
@@ -33,13 +36,15 @@ st.title("AI Password Strength & Crack Predictor")
 password = st.text_input("Enter Password", type="password")
 
 if password:
-    prediction = model.predict([password])[0]
     entropy = calculate_entropy(password)
+    strength = get_strength_label(entropy)
     crack_time = estimate_crack_time(entropy)
+
     st.subheader("Results")
-    st.write(f"Strength: **{prediction.upper()}**")
+    st.write(f"Strength: **{strength}**")
     st.write(f"Entropy Score: **{entropy}**")
     st.write(f"Estimated Crack Difficulty: **{crack_time}**")
+
     suggestions = improve_password(password)
     if suggestions:
         st.subheader("Suggestions to Improve")
